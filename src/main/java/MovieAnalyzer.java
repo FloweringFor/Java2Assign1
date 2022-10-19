@@ -1,7 +1,6 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.lang.String;
 import java.util.stream.Collectors;
 
 
@@ -257,11 +256,11 @@ public class MovieAnalyzer {
                 if (reader.get("Gross").equals("")) {
                     Gross = -1;
                 } else {
-                    Gross = Integer.valueOf(reader.get("Gross").replace(",",""));
+                    Gross = Integer.valueOf(reader.get("Gross").replace(",", ""));
                 }
-                Movie movie = new Movie(Series_Title, Released_Year,Certificate,
-                        Runtime,Genre,IMDB_Rating, Overview,Meta_score,
-                        Director,Star1,Star2,Star3,Star4,No_of_Votes,Gross);
+                Movie movie = new Movie(Series_Title, Released_Year, Certificate,
+                        Runtime, Genre, IMDB_Rating, Overview, Meta_score,
+                        Director, Star1, Star2, Star3, Star4, No_of_Votes, Gross);
                 data.add(movie);
             }
         } catch (FileNotFoundException e) {
@@ -272,18 +271,21 @@ public class MovieAnalyzer {
     }
 
     public Map<Integer, Integer> getMovieCountByYear() {
-        Map<Integer, Long> result = data.stream().collect(Collectors.groupingBy(Movie::getReleased_Year, Collectors.counting()));
-        Map<Integer, Long> answer = result.entrySet().stream().sorted((Map.Entry.<Integer, Long>comparingByKey().reversed()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        Map<Integer, Long> result = data.stream()
+                .collect(Collectors.groupingBy(Movie::getReleased_Year, Collectors.counting()));
+        Map<Integer, Long> answer = result.entrySet().stream()
+                .sorted((Map.Entry.<Integer, Long>comparingByKey().reversed()))
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         Map<Integer, Integer> final_result = new LinkedHashMap<>();
-        answer.forEach((key,value)->{
+        answer.forEach((key, value) -> {
             final_result.put(key, value.intValue());
         });
 
         return final_result;
     }
 
-
+    
     public Map<String, Integer> getMovieCountByGenre() {
         Map<String, Integer> result = new HashMap<>();
         String[] genreList;
@@ -292,22 +294,22 @@ public class MovieAnalyzer {
             for (int j = 0; j < genreList.length; j++) {
                 if (result.containsKey(genreList[j])) {
                     Integer pre = result.get(genreList[j]);
-                    result.put(genreList[j], pre+1);
+                    result.put(genreList[j], pre + 1);
                 } else {
                     result.put(genreList[j], 1);
                 }
             }
         }
         List<GenreItem> items = new ArrayList<>();
-        result.forEach((key,value)->{
-            items.add(new GenreItem(key,value));
+        result.forEach((key, value) -> {
+            items.add(new GenreItem(key, value));
         });
 
         List<GenreItem> answer = items.stream().sorted(Comparator.comparing(GenreItem::getValue)
                 .reversed().thenComparing(GenreItem::getKey)).collect(Collectors.toList());
         Map<String, Integer> final_result = new LinkedHashMap<>();
         for (int i = 0; i < answer.size(); i++) {
-            final_result.put(answer.get(i).key,answer.get(i).value);
+            final_result.put(answer.get(i).key, answer.get(i).value);
         }
         return final_result;
     }
@@ -321,8 +323,8 @@ public class MovieAnalyzer {
             names[1] = data.get(i).getStar2();
             names[2] = data.get(i).getStar3();
             names[3] = data.get(i).getStar4();
-            for (int j = 0; j < names.length-1; j++) {
-                for (int k = j+1; k < names.length; k++) {
+            for (int j = 0; j < names.length - 1; j++) {
+                for (int k = j + 1; k < names.length; k++) {
                     List<String> l = new ArrayList<>();
                     if (names[j].compareTo(names[k]) < 0) {
                         l.add(names[j]);
@@ -332,9 +334,9 @@ public class MovieAnalyzer {
                         l.add(names[j]);
                     }
                     if (map.containsKey(l)) {
-                        map.put(l,map.get(l) + 1);
+                        map.put(l, map.get(l) + 1);
                     } else {
-                        map.put(l,1);
+                        map.put(l, 1);
                     }
                 }
             }
@@ -348,10 +350,12 @@ public class MovieAnalyzer {
         List<Movie> movies;
         if (by.equals("runtime")) {
             movies = data.stream().sorted(Comparator.comparing(Movie::getRuntime).reversed()
-                    .thenComparing(Movie::getSeries_Title)).limit(top_k).collect(Collectors.toList());
+                    .thenComparing(Movie::getSeries_Title)).limit(top_k)
+                    .collect(Collectors.toList());
         } else {
             movies = data.stream().sorted(Comparator.comparing(Movie::getOverviewLength).reversed()
-                    .thenComparing(Movie::getSeries_Title)).limit(top_k).collect(Collectors.toList());
+                    .thenComparing(Movie::getSeries_Title)).limit(top_k)
+                    .collect(Collectors.toList());
         }
         List<String> result = new ArrayList<>();
         for (int i = 0; i < movies.size(); i++) {
@@ -366,7 +370,7 @@ public class MovieAnalyzer {
         List<String> answer = new ArrayList<>();
         if (by.equals("rating")) {
             HashMap<String, Message<Double>> stars = new HashMap<>();
-            for (int i = 0; i < data.size(); i++){
+            for (int i = 0; i < data.size(); i++) {
                 String[] names = new String[4];
                 names[0] = data.get(i).getStar1();
                 names[1] = data.get(i).getStar2();
@@ -378,7 +382,8 @@ public class MovieAnalyzer {
                             stars.get(names[j]).count++;
                             stars.get(names[j]).total += data.get(i).getIMDB_Rating();
                         } else {
-                            Message<Double> message = new Message<>(1, (double) data.get(i).getIMDB_Rating());
+                            Message<Double> message = new Message<>(1,
+                                    (double) data.get(i).getIMDB_Rating());
                             stars.put(names[j], message);
                         }
                     }
@@ -386,9 +391,11 @@ public class MovieAnalyzer {
             }
             List<Star> starData = new ArrayList<>();
             for (String name : stars.keySet()) {
-                starData.add(new Star(name,stars.get(name).total / stars.get(name).count));
+                starData.add(new Star(name, stars.get(name).total / stars.get(name).count));
             }
-            List<Star> result = starData.stream().sorted(Comparator.comparing(Star::getNumber).reversed().thenComparing(Star::getName)).limit(top_k).collect(Collectors.toList());
+            List<Star> result = starData.stream().sorted(Comparator.comparing(Star::getNumber)
+                    .reversed().thenComparing(Star::getName)).limit(top_k)
+                    .collect(Collectors.toList());
             for (int i = 0; i < result.size(); i++) {
                 answer.add(result.get(i).name);
             }
@@ -408,7 +415,7 @@ public class MovieAnalyzer {
                             stars.get(names[j]).count++;
                             stars.get(names[j]).total += data.get(i).getGross();
                         } else {
-                            Message<Long> message = new Message<>(1, (long)data.get(i).getGross());
+                            Message<Long> message = new Message<>(1, (long) data.get(i).getGross());
                             stars.put(names[j], message);
                         }
                     }
@@ -417,10 +424,12 @@ public class MovieAnalyzer {
 
             List<Star> starData = new ArrayList<>();
             for (String name : stars.keySet()) {
-                starData.add(new Star(name, (double) (stars.get(name).total / stars.get(name).count)));
+                starData.add(new Star(name,
+                        (double) (stars.get(name).total / stars.get(name).count)));
             }
             List<Star> result = starData.stream().sorted(Comparator.comparing(Star::getNumber)
-                    .reversed().thenComparing(Star::getName)).limit(top_k).collect(Collectors.toList());
+                    .reversed().thenComparing(Star::getName)).limit(top_k)
+                    .collect(Collectors.toList());
             for (int i = 0; i < result.size(); i++) {
                 answer.add(result.get(i).name);
             }
@@ -440,20 +449,13 @@ public class MovieAnalyzer {
             }
         }
 
-        List<Movie> result = list.stream().sorted(Comparator.comparing(Movie::getSeries_Title)).collect(Collectors.toList());
+        List<Movie> result = list.stream().sorted(Comparator.comparing(Movie::getSeries_Title))
+                .collect(Collectors.toList());
         List<String> answer = new ArrayList<>();
         for (Movie movie : result) {
             answer.add(movie.getSeries_Title());
         }
         return answer;
-    }
-
-    public static void main(String[] args) {
-        MovieAnalyzer movieAnalyzer = new MovieAnalyzer("/Users/chenwenyan/IdeaProjects/Java2_A1/src/main/resources/imdb_top_500.csv");
-        List<String> list = movieAnalyzer.getTopStars(15, "rating");
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i));
-        }
     }
 }
 
