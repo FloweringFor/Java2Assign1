@@ -12,6 +12,11 @@ import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
+
+/**
+ * This file is reprinted from com.csvreader.CsvReader.
+ */
+
 public class CsvReader {
     private Reader inputStream;
     private String fileName;
@@ -122,7 +127,7 @@ public class CsvReader {
     }
 
     public CsvReader(InputStream var1, Charset var2) {
-        this((Reader)(new InputStreamReader(var1, var2)));
+        this((Reader) (new InputStreamReader(var1, var2)));
     }
 
     public boolean getCaptureRawRecord() {
@@ -254,7 +259,7 @@ public class CsvReader {
             this.headersHolder.Length = 0;
         }
 
-        for(int var2 = 0; var2 < this.headersHolder.Length; ++var2) {
+        for (int var2 = 0; var2 < this.headersHolder.Length; ++var2) {
             this.headersHolder.IndexByName.put(var1[var2], new Integer(var2));
         }
 
@@ -292,14 +297,15 @@ public class CsvReader {
         this.dataBuffer.LineStart = this.dataBuffer.Position;
         this.hasReadNextLine = false;
         if (this.hasMoreData) {
-            while(true) {
+            while (true) {
                 if (this.dataBuffer.Position == this.dataBuffer.Count) {
                     this.checkDataLength();
                 } else {
                     this.startedWithQualifier = false;
                     char var1 = this.dataBuffer.Buffer[this.dataBuffer.Position];
                     boolean var2;
-                    if (this.userSettings.UseTextQualifier && var1 == this.userSettings.TextQualifier) {
+                    if (this.userSettings.UseTextQualifier
+                            && var1 == this.userSettings.TextQualifier) {
                         this.lastLetter = var1;
                         this.startedColumn = true;
                         this.dataBuffer.ColumnStart = this.dataBuffer.Position + 1;
@@ -333,7 +339,7 @@ public class CsvReader {
                                     }
                                 } else if (var14) {
                                     ++var8;
-                                    switch(var13) {
+                                    switch (var13) {
                                         case 1:
                                             var9 = (char)(var9 * 16);
                                             var9 += hexToDec(var1);
@@ -349,14 +355,14 @@ public class CsvReader {
                                             }
                                             break;
                                         case 3:
-                                            var9 = (char)(var9 * 10);
-                                            var9 += (char)(var1 - 48);
+                                            var9 = (char) (var9 * 10);
+                                            var9 += (char) (var1 - 48);
                                             if (var8 == 3) {
                                                 var14 = false;
                                             }
                                             break;
                                         case 4:
-                                            var9 = (char)(var9 * 16);
+                                            var9 = (char) (var9 * 16);
                                             var9 += hexToDec(var1);
                                             if (var8 == 2) {
                                                 var14 = false;
@@ -381,7 +387,7 @@ public class CsvReader {
                                         var2 = true;
                                     }
                                 } else if (this.userSettings.EscapeMode == 2 && var12) {
-                                    switch(var1) {
+                                    switch (var1) {
                                         case '0':
                                         case '1':
                                         case '2':
@@ -454,7 +460,7 @@ public class CsvReader {
                                         case 'o':
                                         case 'u':
                                         case 'x':
-                                            switch(var1) {
+                                            switch (var1) {
                                                 case 'D':
                                                 case 'd':
                                                     var13 = 3;
@@ -529,7 +535,7 @@ public class CsvReader {
                                     }
                                 }
                             }
-                        } while(this.hasMoreData && this.startedColumn);
+                        } while (this.hasMoreData && this.startedColumn);
                     } else if (var1 == this.userSettings.Delimiter) {
                         this.lastLetter = var1;
                         this.endColumn();
@@ -576,9 +582,9 @@ public class CsvReader {
                                         }
                                     } else if (var3) {
                                         ++var5;
-                                        switch(var4) {
+                                        switch (var4) {
                                             case 1:
-                                                var6 = (char)(var6 * 16);
+                                                var6 = (char) (var6 * 16);
                                                 var6 += hexToDec(var1);
                                                 if (var5 == 4) {
                                                     var3 = false;
@@ -612,7 +618,7 @@ public class CsvReader {
                                             this.dataBuffer.ColumnStart = this.dataBuffer.Position + 1;
                                         }
                                     } else if (this.userSettings.EscapeMode == 2 && var2) {
-                                        switch(var1) {
+                                        switch (var1) {
                                             case '0':
                                             case '1':
                                             case '2':
@@ -685,7 +691,7 @@ public class CsvReader {
                                             case 'o':
                                             case 'u':
                                             case 'x':
-                                                switch(var1) {
+                                                switch (var1) {
                                                     case 'D':
                                                     case 'd':
                                                         var4 = 3;
@@ -751,7 +757,7 @@ public class CsvReader {
                                         }
                                     }
                                 }
-                            } while(this.hasMoreData && this.startedColumn);
+                            } while (this.hasMoreData && this.startedColumn);
                         }
                     } else {
                         if (!this.startedColumn && this.columnsCount <= 0 && (this.userSettings.SkipEmptyRecords || var1 != '\r' && this.lastLetter == '\r')) {
@@ -841,7 +847,7 @@ public class CsvReader {
         this.headersHolder.Length = this.columnsCount;
         this.headersHolder.Headers = new String[this.columnsCount];
 
-        for(int var2 = 0; var2 < this.headersHolder.Length; ++var2) {
+        for (int var2 = 0; var2 < this.headersHolder.Length; ++var2) {
             String var3 = this.get(var2);
             this.headersHolder.Headers[var2] = var3;
             this.headersHolder.IndexByName.put(var3, new Integer(var2));
@@ -873,7 +879,7 @@ public class CsvReader {
                 if (this.dataBuffer.ColumnStart < this.dataBuffer.Position) {
                     var2 = this.dataBuffer.Position - 1;
                     if (this.userSettings.TrimWhitespace && !this.startedWithQualifier) {
-                        while(var2 >= this.dataBuffer.ColumnStart && (this.dataBuffer.Buffer[var2] == ' ' || this.dataBuffer.Buffer[var2] == '\t')) {
+                        while (var2 >= this.dataBuffer.ColumnStart && (this.dataBuffer.Buffer[var2] == ' ' || this.dataBuffer.Buffer[var2] == '\t')) {
                             --var2;
                         }
                     }
@@ -884,7 +890,7 @@ public class CsvReader {
                 this.updateCurrentValue();
                 var2 = this.columnBuffer.Position - 1;
                 if (this.userSettings.TrimWhitespace && !this.startedWithQualifier) {
-                    while(var2 >= 0 && (this.columnBuffer.Buffer[var2] == ' ' || this.columnBuffer.Buffer[var2] == ' ')) {
+                    while (var2 >= 0 && (this.columnBuffer.Buffer[var2] == ' ' || this.columnBuffer.Buffer[var2] == ' ')) {
                         --var2;
                     }
                 }
@@ -991,7 +997,7 @@ public class CsvReader {
                         ++this.dataBuffer.Position;
                     }
                 }
-            } while(this.hasMoreData && !var2);
+            } while (this.hasMoreData && !var2);
 
             this.columnBuffer.Position = 0;
             this.dataBuffer.LineStart = this.dataBuffer.Position + 1;
